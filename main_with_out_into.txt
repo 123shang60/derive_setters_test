@@ -1,0 +1,112 @@
+#![feature(prelude_import)]
+#[prelude_import]
+use std::prelude::rust_2018::*;
+#[macro_use]
+extern crate std;
+use derive_setters::Setters;
+use std::time::SystemTime;
+struct A {
+    a: BS,
+    b: i64,
+}
+impl A {
+    pub fn a(self, value: BS) -> Self {
+        A { a: value, ..self }
+    }
+    pub fn b(self, value: i64) -> Self {
+        A { b: value, ..self }
+    }
+}
+#[automatically_derived]
+#[allow(unused_qualifications)]
+impl ::core::default::Default for A {
+    #[inline]
+    fn default() -> A {
+        A {
+            a: ::core::default::Default::default(),
+            b: ::core::default::Default::default(),
+        }
+    }
+}
+struct BS {
+    a: String,
+}
+impl BS {
+    pub fn a(self, value: String) -> Self {
+        BS { a: value, ..self }
+    }
+}
+#[automatically_derived]
+#[allow(unused_qualifications)]
+impl ::core::clone::Clone for BS {
+    #[inline]
+    fn clone(&self) -> BS {
+        match *self {
+            BS { a: ref __self_0_0 } => BS {
+                a: ::core::clone::Clone::clone(&(*__self_0_0)),
+            },
+        }
+    }
+}
+#[automatically_derived]
+#[allow(unused_qualifications)]
+impl ::core::default::Default for BS {
+    #[inline]
+    fn default() -> BS {
+        BS {
+            a: ::core::default::Default::default(),
+        }
+    }
+}
+fn main() {
+    let sy_time = SystemTime::now();
+    let str = std::fs::read_to_string("/Users/liuhanwen/gotest/http-test/test.json").unwrap();
+    let b = BS { a: str };
+    let mut vec = ::alloc::vec::Vec::new();
+    for _ in 0..1000 {
+        let a = A { a: b.clone(), b: 0 };
+        vec.push(a);
+    }
+    {
+        ::std::io::_print(::core::fmt::Arguments::new_v1(
+            &["", ",", "\n"],
+            &match (
+                &"原生消耗用时",
+                &SystemTime::now()
+                    .duration_since(sy_time)
+                    .unwrap()
+                    .as_millis(),
+            ) {
+                (arg0, arg1) => [
+                    ::core::fmt::ArgumentV1::new(arg0, ::core::fmt::Display::fmt),
+                    ::core::fmt::ArgumentV1::new(arg1, ::core::fmt::Display::fmt),
+                ],
+            },
+        ));
+    };
+    let mut vec = ::alloc::vec::Vec::new();
+    let sy_time = SystemTime::now();
+    for _ in 0..1000 {
+        let mut a = A::default();
+        a = a.a(b.clone());
+        a = a.b(0);
+        vec.push(a);
+    }
+    {
+        ::std::io::_print(::core::fmt::Arguments::new_v1(
+            &["", ",", "\n"],
+            &match (
+                &"setter消耗用时",
+                &SystemTime::now()
+                    .duration_since(sy_time)
+                    .unwrap()
+                    .as_millis(),
+            ) {
+                (arg0, arg1) => [
+                    ::core::fmt::ArgumentV1::new(arg0, ::core::fmt::Display::fmt),
+                    ::core::fmt::ArgumentV1::new(arg1, ::core::fmt::Display::fmt),
+                ],
+            },
+        ));
+    };
+}
